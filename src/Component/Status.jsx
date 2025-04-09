@@ -1,100 +1,114 @@
-import React, { useContext } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { TodoContext } from './TodoContext'
+import React, { useContext } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { TodoContext } from './TodoContext';
 
+import { GiPin } from "react-icons/gi";
+import { MdDescription } from "react-icons/md";
+import { FcCalendar } from "react-icons/fc";
+import { BsHourglassSplit } from "react-icons/bs";
+import { FaMapPin } from "react-icons/fa";
+import { FcClock } from "react-icons/fc";
 
 const Status = () => {
-    const {todo}=useContext(TodoContext)
-    const {id}=useParams()
-    const navigate=useNavigate()
+  const { todo } = useContext(TodoContext);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-    const task=todo.find((td)=>td.id === id)
+  const task = todo.find((td) => td.id === id);
 
-    const formatDate = (dateString) => {
-        if (!dateString) return "N/A";
-        const date = new Date(dateString);
-        return date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        });
-    };
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
-    const getRemainingTime = (deadline) => {
-        if (!deadline) return "N/A";
+  const getRemainingTime = (deadline) => {
+    if (!deadline) return "N/A";
+    const today = new Date();
+    const dueDate = new Date(deadline);
+    const timeDiff = dueDate - today;
+    const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
-        const today = new Date();
-        const dueDate = new Date(deadline);
-        const timeDiff = dueDate - today;
+    if (daysRemaining > 0) return `${daysRemaining} days remaining`;
+    if (daysRemaining === 0) return "Due today!";
+    return `Overdue by ${Math.abs(daysRemaining)} days`;
+  };
 
-        const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+  const getPercentage = (timeDiff, daysRemaining) => {
+    if (!timeDiff || !daysRemaining) return "0% Completed";
+    const progress = ((timeDiff - daysRemaining) / timeDiff) * 100;
+    return `${Math.min(100, Math.max(0, Math.round(progress)))}% Completed`;
+  };
 
-        if (daysRemaining > 0) {
-            return `${daysRemaining} days remaining`;
-        } else if (daysRemaining === 0) {
-            return "Due today!";
-        } else {
-            return `Overdue by ${Math.abs(daysRemaining)} days`;
-        }
-    };
-    const getPercentage = (timeDiff, daysRemaining) => {
-        if (!timeDiff || !daysRemaining) return "0% Completed";
+  const totalTime = Math.abs(new Date(task.dl) - new Date(task.sd)) / (1000 * 60 * 60 * 24);
+  const daysRemaining = Math.ceil((new Date(task.dl) - new Date()) / (1000 * 60 * 60 * 24));
 
-        const progress = ((timeDiff - daysRemaining) / timeDiff) * 100;
-        return `${Math.min(100, Math.max(0, Math.round(progress)))}% Completed`;
-    };
-
-    const totalTime = Math.abs(new Date(task.dl) - new Date(task.sd)) / (1000 * 60 * 60 * 24);
-    const daysRemaining = Math.ceil((new Date(task.dl) - new Date()) / (1000 * 60 * 60 * 24));
-
-    const getStatusColor = () => {
-        switch (task.cs) {
-            case "NotStarted":
-                return "bg-gray-500 text-white px-2 rounded-xl";
-            case "Starting":
-                return "bg-orange-500 text-white px-2 rounded-xl";
-            case "Ongoing":
-                return "bg-yellow-400 text-white px-2 rounded-xl";
-            case "Completed":
-                return "bg-green-500 text-white px-2 rounded-xl";
-            default:
-                return "bg-gray-300 text-black px-2 rounded-xl";
-        }
-    };
+  const getStatusColor = () => {
+    switch (task.cs) {
+      case "NotStarted": return "bg-gray-500";
+      case "Starting": return "bg-orange-500";
+      case "Ongoing": return "bg-yellow-400 text-black";
+      case "Completed": return "bg-green-500";
+      default: return "bg-gray-300 text-black";
+    }
+  };
 
   return (
-    <div className='flex flex-col gap-10 p-5'>
-        <div className='flex justify-end'>
-                <p className='px-2 bg-white text-black rounded-xl cursor-pointer' onClick={()=>navigate(`/`)}>Back to List</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-cyan-100 p-6 flex flex-col gap-8">
+        <div className="flex justify-end">
+            <button
+            className="bg-white text-blue-700 px-4 py-1 rounded-xl shadow hover:bg-blue-50 transition cursor-pointer"
+            onClick={() => navigate(`/`)}
+            >
+                Back to List
+            </button>
         </div>
-        <div className='flex gap-90'>
-            <div className='flex flex-col gap-10'>
-                <div className='flex flex-col justify-center gap-15 text-left'>
-                    <h1 className='text-4xl'>Title: {task.title}</h1>
-                    <h3 className='text-2xl'>Description: {task.desc}</h3>
+
+        <div className='flex flex-col gap-8'>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-10">
+                {/* Task Info Section */}
+                <div className="flex flex-col gap-6 bg-white p-6 rounded-xl shadow-md w-full md:w-2/3">
+                    <div className="text-gray-800 flex flex-col gap-2">
+                        <h1 className=" flex justify-center items-center text-3xl font-bold mb-2"><GiPin className='text-red-500'/> Title: {task.title}</h1>
+                        <h3 className=" flex items-center text-xl text-gray-600"><MdDescription className='text-purple-300'/> Description: {task.desc}</h3>
+                    </div>
+
+                    <div className="text-gray-700 space-y-2 text-left">
+                        <p className='flex items-center text-lg'><FcCalendar/> Starting Date: <strong>{formatDate(task.sd)}</strong></p>
+                        <p className='flex items-center text-lg'><BsHourglassSplit className='text-amber-200'/> Deadline: <strong>{formatDate(task.dl)}</strong></p>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2">
+                        <p className="flex items-center text-gray-800 font-medium"><FaMapPin className='text-red-500'/> Current Status:</p>
+                        <span className={`${getStatusColor()} text-white px-3 py-1 rounded-full text-sm font-semibold`}>
+                            {task.cs}
+                        </span>
+                    </div>
                 </div>
-                <div className='text-left'>
-                    <p>Starting Date: {formatDate(task.sd)}</p>
-                    <p>DeadLine: {formatDate(task.dl)}</p>
-                </div>
-                <div className=' flex items-center gap-2 text-left'>
-                    <p>Current status: </p>
-                    <p className={getStatusColor(task.cs)}>{task.cs}</p>
-                </div>
+
+                {/* Progress Circle */}
+                <div className="w-full md:w-1/3 flex items-center justify-center">
+                    <div className="w-44 h-44 rounded-full border-8 border-green-400 bg-white flex items-center justify-center shadow-lg">
+                        <span className="text-xl font-bold text-green-700">
+                            {getPercentage(totalTime, daysRemaining)}
+                        </span>
+                    </div>
+                </div> 
+            </div>   
+                
+            {/* Remaining Time Section */}
+            <div className="flex items-center justify-center">
+                <p className="flex items-center bg-red-500 text-white text-md px-4 py-2 rounded-xl shadow">
+                    <FcClock/> Remaining Time: {getRemainingTime(task.dl)}
+                </p>
             </div>
-            <div className='flex items-center justify-center'>
-                <div className='flex items-center justify-center bg-green-500 rounded-full w-[170px] h-[170px]'>
-                    <p>
-                        {getPercentage(totalTime, daysRemaining)}
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div className='flex items-center justify-center'>
-            <p className='bg-red-500 rounded-xl px-2'>Remaining Time: {getRemainingTime(task.dl)}</p>
         </div>
     </div>
-  )
-}
+  );
+};
 
-export default Status
+export default Status;

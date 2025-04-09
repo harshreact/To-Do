@@ -13,7 +13,7 @@ const Addtask = () => {
     title: "",
     desc: "",
     dl: "",
-    cs: "Starting",
+    cs: "",
   });
 
   useEffect(() => {
@@ -28,123 +28,110 @@ const Addtask = () => {
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     if (!task.title.trim() || !task.desc.trim()) {
-      alert("can't be null");
+      alert("Fields cannot be empty.");
       return;
     }
-
-    e.preventDefault();
-    if (id) {
-      updateTodo(task);
-    } else {
-      addTodo(task);
-    }
+    id ? updateTodo(task) : addTodo(task);
     navigate("/");
   };
 
   return (
-    <div className="flex flex-col min-h-screen items-center gap-4 bg-cyan-200 text-center">
-      <h1 className="flex gap-2 text-black text-4xl">
-        <span className="flex items-center">
-          <GiJourney />
-        </span>
-        New Journey begins...
+    <div className="flex flex-col min-h-screen items-center justify-center bg-gradient-to-br from-cyan-200 to-blue-100 px-4 py-10">
+      <h1 className="flex gap-2 items-center text-4xl font-bold text-gray-800 mb-6">
+        <GiJourney className="text-4xl" />
+        New Journey Begins...
       </h1>
-      <div>
-        <form className="bg-white flex flex-col p-3 rounded-sm gap-2">
-          <div className="text-black flex flex-col gap-1">
-            <label htmlFor="title" name="title">
-              Task title
-            </label>
-            <input
-              className="border rounded-sm"
-              value={task.title}
-              type="text"
-              id="title"
-              name="title"
-              placeholder="Ex : To-Do List"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="text-black flex flex-col gap-1">
-            <label htmlFor="desc" name="desc">
-              Task Description
-            </label>
-            <textarea
-              value={task.desc}
-              id="desc"
-              name="desc"
-              className="border rounded-sm resize-none"
-              placeholder="Describe your task"
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="text-black flex flex-col gap-1 relative">
-            <label htmlFor="sd" name="sd">
-              Starting Date
-            </label>
-            <input
-              type="date"
-              id="sd"
-              name="sd"
-              value={task.sd}
-              className="border rounded-sm pr-10"
-              onChange={handleChange}
-            />
-            <FiCalendar className="absolute right-2 top-8 text-gray-500 pointer-events-none" />
-          </div>
 
-          <div className="text-black flex flex-col gap-1 relative">
-            <label htmlFor="dl" name="dl">
-              DeadLine
-            </label>
-            <input
-              type="date"
-              id="dl"
-              name="dl"
-              className="border rounded-sm pr-10"
-              value={task.dl}
-              onChange={handleChange}
-            />
-            <FiCalendar className="absolute right-2 top-8 text-gray-500 pointer-events-none" />
-          </div>
+      <form className="bg-white w-full max-w-md shadow-lg rounded-2xl p-6 space-y-5">
+        <div className="flex flex-col">
+          <label htmlFor="title" className="text-lg font-medium text-gray-700">Task Title</label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            className="mt-1 px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-400"
+            placeholder="Ex: Build a To-Do App"
+            value={task.title}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-          <div className="text-black flex flex-col gap-1">
-            <label htmlFor="cs" name="cs">
-              Current Status
-            </label>
-            <select
-              id="cs"
-              name="cs"
-              className="border rounded-sm"
-              value={task.cs}
-              onChange={handleChange}
-            >
-              <option value="NotStarted">Not Started</option>
-              <option value="Starting">Starting</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </div>
-          <div className="flex justify-center gap-2">
-            <button
-              className="bg-blue-500 rounded-xl p-1 cursor-pointer"
-              onClick={() => navigate("/")}
-            >
-              To-Do List
-            </button>
-            <button
-              type="submit"
-              className="bg-green-500 rounded-xl p-1 cursor-pointer"
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="flex flex-col">
+          <label htmlFor="desc" className="text-lg font-medium text-gray-700">Task Description</label>
+          <textarea
+            id="desc"
+            name="desc"
+            className="mt-1 px-3 py-2 border border-gray-400 rounded-md shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-400"
+            rows="4"
+            placeholder="Describe your task"
+            value={task.desc}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="flex flex-col relative">
+          <label htmlFor="sd" className="text-lg font-medium text-gray-700">Start Date</label>
+          <input
+            type="date"
+            id="sd"
+            name="sd"
+            className="mt-1 px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10 text-gray-400"
+            value={task.sd}
+            onChange={handleChange}
+          />
+          <FiCalendar className="absolute right-3 bottom-3 text-gray-500 pointer-events-none" />
+        </div>
+
+        <div className="flex flex-col relative">
+          <label htmlFor="dl" className="text-lg font-medium text-gray-700">Deadline</label>
+          <input
+            type="date"
+            id="dl"
+            name="dl"
+            className="mt-1 px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10 text-gray-400"
+            value={task.dl}
+            onChange={handleChange}
+          />
+          <FiCalendar className="absolute right-3 bottom-3 text-gray-500 pointer-events-none" />
+        </div>
+
+        <div className="flex flex-col">
+          <label htmlFor="cs" className="text-lg font-medium text-gray-700">Current Status</label>
+          <select
+            id="cs"
+            name="cs"
+            className="mt-1 px-3 py-2 border border-gray-400 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-400"
+            value={task.cs}
+            onChange={handleChange}
+          >
+            <option value="default">Not Started</option>
+            <option value="Starting">Starting</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="Completed">Completed</option>
+          </select>
+        </div>
+
+        <div className="flex justify-between mt-6">
+          <button
+            type="button"
+            className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-xl transition duration-200 cursor-pointer"
+            onClick={() => navigate("/")}
+          >
+            Back to List
+          </button>
+          <button
+            type="submit"
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl transition duration-200 cursor-pointer"
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

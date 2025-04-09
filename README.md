@@ -3,6 +3,7 @@
 A sleek and minimal To-Do List app built with React. Add, delete, and mark tasks as complete to boost your productivity.
 
 🚀 Features
+
   -📌 Add new tasks
 
   -✅ Mark tasks as complete
@@ -22,3 +23,4 @@ A sleek and minimal To-Do List app built with React. Add, delete, and mark tasks
   -CSS / Tailwind CSS / Styled Components (your choice)
 
 📦 Installation
+
